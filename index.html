@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Enlaces 3D</title>
+    <style>
+        /* --- CONFIGURACIÓN BÁSICA Y FUENTES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap');
+
+        :root {
+            --primary: #00f3ff; /* Cian Neón */
+            --secondary: #bc13fe; /* Violeta Neón */
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+            perspective: 1000px; /* Clave para el efecto 3D global */
+        }
+
+        /* --- CONTENEDOR PRINCIPAL CON ROTACIÓN 3D --- */
+        .scene-container {
+            width: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Título flotante */
+        h1 {
+            text-align: center;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+            transform: translateZ(50px); /* El título flota sobre los botones */
+            letter-spacing: 2px;
+        }
+
+        /* --- LISTA DE ENLACES (TARJETAS 3D) --- */
+        .link-list {
+            list-style: none;
+            transform-style: preserve-3d;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        /* El enlace en sí */
+        .card a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            background: var(--glass);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            
+            /* Efecto de profundidad interna */
+            transform: translateZ(0px); 
+        }
+
+        /* Elementos decorativos (bordes brillantes) */
+        .card::before, .card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            transform: translateZ(-10px); /* Detrás del botón */
+        }
+
+        .card::before {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        .card::after {
+            background: linear-gradient(45deg, transparent 40%, rgba(0, 243, 255, 0.1) 50%, transparent 60%);
+        }
+
+        /* --- EFECTOS HOVER (LA MAGIA 3D) --- */
+        .card:hover {
+            /* Rota la tarjeta hacia el usuario y la escala */
+            transform: rotateX(10deg) rotateY(-5deg) translateZ(20px) scale(1.05);
+            z-index: 10;
+        }
+
+        .card:hover a {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--primary);
+            box-shadow: 
+                0 0 30px rgba(0, 243, 255, 0.2),
+                inset 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            animation: pulseBorder 1.5s infinite;
+        }
+
+        /* Variación de color para el segundo elemento */
+        .card:nth-child(2):hover {
+             transform: rotateX(-5deg) rotateY(5deg) translateZ(30px) scale(1.05);
+        }
+        .card:nth-child(2):hover a {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            text-shadow: 0 0 8px var(--secondary);
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+        }
+        .card:nth-child(2)::before {
+            border-color: var(--secondary);
+            box-shadow: 0 0 20px var(--secondary);
+        }
+
+        /* Variación para el tercer elemento */
+        .card:nth-child(3):hover {
+             transform: rotateX(5deg) rotateY(0deg) translateZ(40px) scale(1.05);
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0); }
+            50% { transform: translateY(-15px) rotateX(2deg); }
+        }
+
+        @keyframes pulseBorder {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        /* Decoración de fondo (Partículas/Brillos) */
+        .glow-bg {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(188, 19, 254, 0.15) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(-100px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Fondo brillante decorativo -->
+    <div class="glow-bg"></div>
+
+    <!-- Contenedor de la escena 3D -->
+    <div class="scene-container">
+        <h1>NEXUS LINKS</h1>
+        
+        <ul class="link-list">
+            <!-- Enlace 1 -->
+            <li class="card">
+                <a href="https://google.com" target="_blank">
+                    Google Search
+                    <div style="font-size: 0.7em; opacity: 0.7; margin-top:5px;">Acceso Global</div>
+                </a>
+            </li>
+
+            <!-- Enlace 2 -->
+            <li class="card">
+                <a href="https://github.com" target="_blank">
+                    GitHub Repo
+                    <div style="font-size: 0.7em; opacity: 0.7; margin-top:5px;">Código Fuente</div>
+                </a>
+            </li>
+
+            <!-- Enlace 3 -->
+            <li class="card">
+                <a href="https://youtube.com" target="_blank">
+                    YouTube Channel
+                    <div style="font-size: 0.7em; opacity: 0.7; margin-top:5px;">Multimedia</div>
+                </a>
+            </li>
+            
+             <!-- Enlace 4 -->
+             <li class="card">
+                <a href="#" target="_blank">
+                    Documentación
+                    <div style="font-size: 0.7em; opacity: 0.7; margin-top:5px;">Archivos PDF</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Script opcional para efecto de inclinación suave con el mouse -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const container = document.querySelector('.scene-container');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            
+            // Aplicamos una rotación sutil basada en la posición del mouse
+            // Nota: Esto se suma a la animación CSS 'float'
+            container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+    </script>
+</body>
+</html>

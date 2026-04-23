@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Propuesta 1: Traslación</title>
+    <style> body { margin: 0; overflow: hidden; } </style>
+</head>
+<body>
+    <!-- Importamos Three.js desde un CDN -->
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+        // 1. CONFIGURACIÓN BÁSICA (Escena, Cámara, Renderizador)
+        const scene = new THREE.Scene();
+         // el Nro 75 define cuanto estara el cubo alejado de la camara,
+         // el 0.1 define lo minimo que se acepta
+         // el 1000 lo maximo que se acepta para mostrar objetos en la escena
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // Crea el motor que usa WebGL (una tecnología del navegador que permite usar la tarjeta gráfica para dibujar 3D rápido)
+        const renderer = new THREE.WebGLRenderer();
+        // Configuramos el tamaño del renderizador para que ocupe toda la ventana del navegador
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Agrega el lienzo del renderizador al cuerpo del documento para que sea visible en la página
+        document.body.appendChild(renderer.domElement);
+
+        // 2. CREAR EL CUBO
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Color verde
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // Posicionar la cámara para ver bien el objeto
+        camera.position.z = 5;
+
+        // Variables para el movimiento
+        let velocidad = 0.05;
+        let limite = 4; // Límite de movimiento en el eje X
+
+        // esto crea el plano cartesiano x,y,z
+        const axesHelper = new THREE.AxesHelper(5);
+        
+        // Agregamos los ejes a la escena para que sean visibles
+        scene.add(axesHelper);
+
+        // 3. BUCLE DE ANIMACIÓN (Se ejecuta 60 veces por segundo aprox)
+        function animate() {
+            // Solicita al navegador que ejecute esta función antes del próximo repintado
+            requestAnimationFrame(animate);
+
+            // Lógica de Traslación
+            cube.position.x += velocidad;
+
+            // Si llega al límite derecho o izquierdo, invertimos la dirección
+            if (cube.position.x > limite || cube.position.x < -limite) {
+                // Invertir la dirección del movimiento
+                velocidad = -velocidad;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

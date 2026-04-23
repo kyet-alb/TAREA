@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cubo 3D con Ejes Cartesianos</title>
+    <style> body { margin: 0; overflow: hidden; } </style>
+</head>
+<body>
+    <!-- Importamos Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>    
+
+    <script>
+        //  CONFIGURACIÓN BÁSICA
+        const scene = new THREE.Scene();
+        // Fondo gris oscuro para que resalten los colores de los ejes
+        scene.background = new THREE.Color(0x222222); 
+
+        // el Nro 75 define cuanto estara el cubo alejado de la camara, el 0.1 define lo minimo que se acepta y el 1000 lo maximo que se acepta para mostrar objetos en la escena
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); 
+       // Crea el motor que usa WebGL (una tecnología del navegador que permite usar la tarjeta gráfica para dibujar 3D rápido)
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Agrega el lienzo del renderizador al cuerpo del documento para que sea visible en la página  
+        document.body.appendChild(renderer.domElement);
+
+        // CREAR EL CUBO
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshNormalMaterial(); 
+        const cubo = new THREE.Mesh(geometry, material);
+        scene.add(cubo);   
+        // Creamos un helper de ejes. El número '5' indica el tamaño de las líneas en unidades 3D.
+        const axesHelper = new THREE.AxesHelper(5);
+        
+        // Agregamos los ejes a la escena para que sean visibles
+        scene.add(axesHelper);
+
+        // UBICAR LA CÁMARA (cuanto mas grande el valor de z, mas alejada estará la cámara del cubo)
+        camera.position.z = 10;
+
+        // ANIMACIÓN CON ROTACIÓN
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotar el cubo en los ejes X e Y
+            cubo.rotation.x += 0.02;
+            cubo.rotation.y += 0.01;
+            
+            // Dibujar la escena
+            renderer.render(scene, camera);
+        }
+
+        // Ejecutar la animación
+        animate();
+    </script>
+</body>
+</html>
